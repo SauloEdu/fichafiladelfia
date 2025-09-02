@@ -52,6 +52,7 @@ interface FormData {
     endereco: {
       rua: string
       numero: string
+      complemento: string
       bairro: string
       cep: string
       cidadeEstado: string
@@ -209,13 +210,14 @@ export default function FormularioAluno() {
         console.log("[v0] Student CPF:", formData.aluno.cpf)
         console.log("[v0] Student RG:", formData.aluno.rg)
 
-        const alunoValid = !!(
-          formData.aluno.nomeCompleto &&
-          formData.aluno.dataNascimento &&
-          formData.aluno.sexo &&
-          formData.aluno.cpf &&
-          formData.aluno.rg
-        )
+        const alunoValid =
+          formData.aluno.nomeCompleto.trim() !== "" &&
+          formData.aluno.dataNascimento.trim() !== "" &&
+          formData.aluno.sexo.trim() !== "" &&
+          formData.aluno.cpf.trim() !== "" &&
+          formData.aluno.rg.trim() !== "" &&
+          formData.aluno.naturalidade.trim() !== "" &&
+          formData.aluno.nacionalidade.trim() !== ""
 
         const enderecoValid =
           formData.aluno.enderecoIgual ||
@@ -277,16 +279,13 @@ export default function FormularioAluno() {
         timestamp: new Date().toISOString(),
       }
 
-      const response = await fetch(
-        "https://n8neditor.escolafiladelfia.com.br/webhook/form",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webhookData),
+      const response = await fetch("https://n8neditor.escolafiladelfia.com.br/webhook/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      )
+        body: JSON.stringify(webhookData),
+      })
 
       if (response.ok) {
         alert("Cadastro realizado com sucesso!")
@@ -754,16 +753,24 @@ export default function FormularioAluno() {
                     <Label htmlFor="aluno-sexo" className="text-sm font-medium text-gray-700">
                       Sexo *
                     </Label>
-                    <select
-                      id="aluno-sexo"
+                    <RadioGroup
                       value={formData.aluno.sexo}
-                      onChange={(e) => updateFormData("aluno", "sexo", e.target.value)}
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      onValueChange={(value) => updateFormData("aluno", "sexo", value)}
+                      className="flex gap-6 mt-2"
                     >
-                      <option value="">Selecione</option>
-                      <option value="masculino">Masculino</option>
-                      <option value="feminino">Feminino</option>
-                    </select>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="masculino" id="aluno-masc" />
+                        <Label htmlFor="aluno-masc">Masculino</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="feminino" id="aluno-fem" />
+                        <Label htmlFor="aluno-fem">Feminino</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="outro" id="aluno-outro" />
+                        <Label htmlFor="aluno-outro">Outro</Label>
+                      </div>
+                    </RadioGroup>
                   </div>
                 </div>
 
@@ -867,6 +874,32 @@ export default function FormularioAluno() {
                     placeholder="(00) 00000-0000"
                     className="mt-1"
                     maxLength={15}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="aluno-naturalidade" className="text-sm font-medium text-gray-700">
+                    Naturalidade *
+                  </Label>
+                  <Input
+                    id="aluno-naturalidade"
+                    value={formData.aluno.naturalidade}
+                    onChange={(e) => updateFormData("aluno", "naturalidade", e.target.value)}
+                    placeholder="Cidade de nascimento"
+                    className="mt-1"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="aluno-nacionalidade" className="text-sm font-medium text-gray-700">
+                    Nacionalidade *
+                  </Label>
+                  <Input
+                    id="aluno-nacionalidade"
+                    value={formData.aluno.nacionalidade}
+                    onChange={(e) => updateFormData("aluno", "nacionalidade", e.target.value)}
+                    placeholder="Ex: Brasileira"
+                    className="mt-1"
                   />
                 </div>
               </div>
