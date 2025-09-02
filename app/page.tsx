@@ -278,7 +278,7 @@ export default function FormularioAluno() {
       }
 
       const response = await fetch(
-        "https://n8nwebhook.escolafiladelfia.com.br/webhook/43a456ac-5925-4df4-8078-73384b876579",
+        "https://n8neditor.escolafiladelfia.com.br/webhook/form",
         {
           method: "POST",
           headers: {
